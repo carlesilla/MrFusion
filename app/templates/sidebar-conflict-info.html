@@ -1,0 +1,32 @@
+{% load static %}
+
+<!-- Settings -->
+<div class="tab-pane fade h-100 {% if section == 'conflict_info' %}show active{% endif %}" id="tab-content-conflict-info" role="tabpanel">
+    <div class="d-flex flex-column h-100">
+        <div class="hide-scrollbar">
+            <div class="container py-8">
+
+                <!-- Title -->
+                <div class="mb-8">
+                    <h2 class="fw-bold m-0">Conflict description</h2>
+                </div>
+
+                <!-- Conflict information -->
+                <div class="card border-0">
+                    <div class="card-body">
+                        <div class="row align-items-center gx-5">
+                            <div class="col">
+                                <a href="{% url 'conflict-info' %}">
+                                    <h5>Conflict Information</h5>
+                                    <p>Brief summary of the conflict</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Conflict information -->
+
+            </div>
+        </div>
+    </div>
+</div>

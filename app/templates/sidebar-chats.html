@@ -1,0 +1,97 @@
+{% load static %}
+
+<!-- Chats -->
+<div class="tab-pane fade h-100 {% if section == 'chats' %}show active{% endif %}" id="tab-content-chats" role="tabpanel">
+    <div class="d-flex flex-column h-100 position-relative">
+        <div class="hide-scrollbar">
+
+            <div class="container py-8">
+                <!-- Title -->
+                <div class="mb-8">
+                    <h2 class="fw-bold m-0">Chats</h2>
+                </div>
+
+                <!-- Chats -->
+                <div class="card-list">
+                    {% for chat in chats %}
+                    <!-- Card -->
+                    <a href="/chat/{{chat.uuid}}/" class="card border-0 text-reset">
+                        {% if chat.is_caucus %}
+                        <h5 class="card-header bg-secondary text-dark">
+                            Private conversation
+                        </h5>
+                        {% else %}
+                        <h5 class="card-header bg-primary text-white">
+                            Multi-party conversation
+                        </h5>
+                        {% endif %}
+                        <!-- card-body -->
+                        <div class="card-body">
+                            <div class="row gx-5">
+                                <div class="col">
+                                    <h6 class="mb-0">{{chat.name}}</h6>
+                                    <p class="mb-0">{{chat.description|truncatewords:25}}</p>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="avatar-group">
+                                        {% for member in chat.members.all %}
+                                        <div class="avatar avatar-xs">
+                                            {% if member.user_profile.profile_pic.url %}
+                                                <img class="avatar-img" src="{{member.user_profile.profile_pic.url}}" alt="#">
+                                            {% else %}
+                                                <img class="avatar-img" src="{% static "assets/img/avatars/0.jpg" %}" alt="#">
+                                            {% endif %}
+                                        </div>
+                                        {% endfor %}
+                                        <div class="avatar avatar-xs">
+                                            <span class="avatar-text">{{ chat.members.count }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- card-body -->
+
+                        <div class="card-footer">
+                            <div class="row align-items-center gx-4">
+                                <div class="col-auto">
+                                    <div class="avatar">
+                                        {% if chat.chathistory_set.last.sent_by.user_profile.profile_pic.url %}
+                                        <img class="avatar-img" src="{{chat.chathistory_set.last.sent_by.user_profile.profile_pic.url}}" alt="{{chat.chathistory_set.last.sent_by.first_name}} {{chat.chathistory_set.last.sent_by.last_name}}">
+                                        {% elif chat.chathistory_set.last.is_llm %}
+                                        <img class="avatar-img" src="{% static "assets/img/avatars/gemini.jpg" %}" alt="{{user.first_name}} {{user.last_name}}">
+                                        {% else %}
+                                        <img class="avatar-img" src="{% static "assets/img/avatars/0.jpg" %}" alt="{{chat.chathistory_set.last.sent_by.first_name}} {{chat.chathistory_set.last.sent_by.last_name}}">
+                                        {% endif %}    
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <h5 class="me-auto mb-0">
+                                            {{chat.chathistory_set.last.sent_by.first_name}} {{chat.chathistory_set.last.sent_by.last_name}}
+                                        </h5>
+                                        <span class="text-muted extra-small ms-2">{{chat.chathistory_set.last.created_at}}</span>
+                                    </div>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="line-clamp me-auto">
+                                            {{chat.chathistory_set.last.message}}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div><!-- .row -->
+                        </div><!-- .card-footer -->
+                    </a>
+                    <!-- Card -->
+                    {% endfor %}
+
+                </div>
+                <!-- Chats -->
+            </div>
+
+        </div>
+    </div>
+</div>

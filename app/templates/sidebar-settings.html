@@ -1,0 +1,220 @@
+{% load static %}
+
+<!-- Settings -->
+<div class="tab-pane fade h-100 {% if section == 'settings' %}show active{% endif %}" id="tab-content-settings" role="tabpanel">
+    <div class="d-flex flex-column h-100">
+        <div class="hide-scrollbar">
+            <div class="container py-8">
+
+                <!-- Title -->
+                <div class="mb-8">
+                    <h2 class="fw-bold m-0">Settings</h2>
+                </div>
+
+                <!-- Account -->
+                <div class="mt-8">
+                    <div class="d-flex align-items-center mb-4 px-6">
+                        <small class="text-muted me-auto">Account</small>
+                    </div>
+
+                    <div class="card border-0">
+                        <div class="card-body py-2">
+                            <!-- Accordion -->
+                            <div class="accordion accordion-flush" id="accordion-profile">
+                                <div class="accordion-item">
+                                    <div class="accordion-header" id="accordion-profile-1">
+                                        <a href="#" class="accordion-button text-reset collapsed" data-bs-toggle="collapse" data-bs-target="#accordion-profile-body-1" aria-expanded="false" aria-controls="accordion-profile-body-1">
+                                            <div>
+                                                <h5>Profile settings</h5>
+                                                <p>Change your profile settings</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <form action="/change-profile-settings" method="post">
+                                        {% csrf_token %}
+                                        <div id="accordion-profile-body-1" class="accordion-collapse collapse" aria-labelledby="accordion-profile-1" data-parent="#accordion-profile">
+                                            <div class="accordion-body">
+                                                <div class="form-floating mb-6">
+                                                    {{ profile_settings_form.username }}
+                                                    <label for="profile-name">Username</label>
+                                                </div>
+
+                                                <div class="form-floating mb-6">
+                                                    {{ profile_settings_form.first_name }}
+                                                    <label for="profile-name">First name</label>
+                                                </div>
+
+                                                <div class="form-floating mb-6">
+                                                    {{ profile_settings_form.last_name }}
+                                                    <label for="profile-name">Last name</label>
+                                                </div>
+
+                                                <div class="form-floating mb-6">
+                                                    {{ profile_settings_form.email }}
+                                                    <label for="profile-email">Email</label>
+                                                </div>
+
+                                                <div class="form-floating mb-6">
+                                                    <div class="row align-items-center">
+                                                        <div class="col">
+                                                            <h5>Party to conflict</h5>
+                                                            <p>Be included as one of the parties to the conflict</p>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <div class="form-check form-switch">
+                                                                {{ profile_settings_form.is_party }}
+                                                                <label class="form-check-label" for="accordion-party-to-conflict-check-1"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <button type="submit" class="btn btn-block btn-lg btn-primary w-100">Save</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Account -->
+
+                <!-- Security -->
+                <div class="mt-8">
+                    <div class="d-flex align-items-center my-4 px-6">
+                        <small class="text-muted me-auto">Security</small>
+                    </div>
+
+                    <div class="card border-0">
+                        <div class="card-body py-2">
+                            <!-- Accordion -->
+                            <div class="accordion accordion-flush" id="accordion-security">
+                                <div class="accordion-item">
+                                    <div class="accordion-header" id="accordion-security-1">
+                                        <a href="#" class="accordion-button text-reset collapsed" data-bs-toggle="collapse" data-bs-target="#accordion-security-body-1" aria-expanded="false" aria-controls="accordion-security-body-1">
+                                            <div>
+                                                <h5>Password</h5>
+                                                <p>Change your password</p>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <div id="accordion-security-body-1" class="accordion-collapse collapse" aria-labelledby="accordion-security-1" data-parent="#accordion-security">
+                                        <div class="accordion-body">
+                                            <form action="/change-password" method="post">
+                                            {% csrf_token %}
+                                                <div class="form-floating mb-6">
+                                                    {{ change_password_form.current_password }}
+                                                    <label for="current-password">Current Password</label>
+                                                </div>
+
+                                                <div class="form-floating mb-6">
+                                                    {{ change_password_form.new_password }}
+                                                    <label for="new-password">New password</label>
+                                                </div>
+
+                                                <div class="form-floating mb-6">
+                                                    {{ change_password_form.confirm_password }}
+                                                    <label for="confirm-password">Confirm Password</label>
+                                                </div>
+                                                <button type="submit" class="btn btn-block btn-lg btn-primary w-100">Save</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Security -->
+
+                <!-- Danger zone -->
+                {% if user.is_superuser %}
+                <div class="mt-8">
+                    <div class="d-flex align-items-center mb-4 px-6">
+                        <small class="text-muted me-auto">Administration</small>
+                    </div>
+
+                    <!-- Delete all data -->
+                    <div class="card border-0">
+                        <div class="card-body py-2">
+                            <!-- Accordion -->
+                            <div class="accordion accordion-flush" id="accordion-danger">
+                                <div class="accordion-item">
+                                    <div class="accordion-header">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <h5>Backup</h5>
+                                                <a href="/backup">Click to download all data to a file</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accordion-item">
+                                    <div class="accordion-header" id="accordion-restore-1">
+                                        <a href="#" class="accordion-button text-reset collapsed" data-bs-toggle="collapse" data-bs-target="#accordion-restore-body-1" aria-expanded="false" aria-controls="accordion-restore-body-1">
+                                            <div>
+                                                <h5>Restore</h5>
+                                                <p>Upload backup file and restore WebApp</p>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <div id="accordion-restore-body-1" class="accordion-collapse collapse" aria-labelledby="accordion-restore-1" data-parent="#accordion-restore">
+                                        <div class="accordion-body">
+                                            <form action="/restore" method="post" enctype="multipart/form-data" >
+                                            {% csrf_token %}
+                                                <div class="mb-3">
+                                                    {{ upload_backup_file_form.backup_file }}
+                                                </div>
+
+                                                <button type="submit" class="btn btn-block btn-lg btn-primary w-100">Upload</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accordion-item">
+                                    <div class="accordion-header" id="accordion-danger-1">
+                                        <a href="#" class="accordion-button text-reset collapsed" data-bs-toggle="collapse" data-bs-target="#accordion-danger-body-1" aria-expanded="false" aria-controls="accordion-danger-body-1">
+                                            <div>
+                                                <h5>Delete all data</h5>
+                                                <p>Once you press delete, there's no turning back.</p>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <div id="accordion-danger-body-1" class="accordion-collapse collapse" aria-labelledby="accordion-danger-1" data-parent="#accordion-danger">
+                                        <div class="accordion-body">
+                                            <form action="/delete" method="post">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-block btn-lg btn-danger w-100" onclick="return confirm('Are you sure?')">Delete</button>
+                                            </form>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+                <!-- Danger zone -->
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function confirm_deletion(){
+        alert("Confirm deletion");
+    }
+</script>

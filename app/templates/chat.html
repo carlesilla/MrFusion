@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load markdownify %}
+
+{% block content %}
+<!-- Chat -->
+<main class="main is-visible" data-dropzone-area="">
+    <div class="container h-100">
+
+        <div hx-ext="ws" ws-connect="/ws/chat/{{chat.uuid}}/" class="d-flex flex-column h-100 position-relative">
+            <!-- Chat: Header -->
+            <div class="chat-header border-bottom py-4 py-lg-7">
+                <div class="row align-items-center">
+
+                    <!-- Mobile: close -->
+                    <div class="col-2 d-xl-none">
+                        <a class="icon icon-lg text-muted" href="#" data-toggle-chat="">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        </a>
+                    </div>
+                    <!-- Mobile: close -->
+
+                    <!-- Content -->
+                    <div class="col-12 col-xl-12">
+                        <div class="row align-items-center text-center text-xl-start">
+                            <!-- Title -->
+                            <div class="col-9 col-xl-9">
+                                <div class="row align-items-center gx-5">
+                                    <div class="col overflow-hidden">
+                                        <h5 class="text-truncate">{{chat.name}}</h5>
+                                        <p class="text-truncate">{{chat.description}}</p>
+                                    </div>
+                                    <div class="col-auto">
+                                        <form action="request-mediation" method="post" onsubmit="disableButton('mediation')">
+                                            {% csrf_token %}
+                                            <button id="run_button_mediation" type="submit" class="btn btn-soft-primary">
+                                                <div id="run_spinner_mediation"></div>
+                                                Run
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Title -->
+
+                            <!-- Toolbar -->
+                            <div class="col-3 col-xl-3 d-block">
+                                <div class="row align-items-center justify-content-end gx-6">
+                                    <div class="col-auto">
+                                        <!-- Dropdown -->
+                                        <div class="dropdown">
+                                            <a class="icon icon-lg text-muted" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+                                            </a>
+
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="#" class="dropdown-item d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#modal-edit-chat">
+                                                        Edit
+                                                        <div class="icon ms-auto">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-3"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                                                        </div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li>
+                                                    {% if chat.owner == request.user %}
+                                                    <a href="/chat/{{chat.uuid}}/empty-chat" class="dropdown-item d-flex align-items-center text-danger" onclick="return confirm('Are you sure? All messages will be deleted')">
+                                                        Empty chat
+                                                        <div class="icon ms-auto">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16">
+                                                                <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293z"/>
+                                                            </svg>
+                                                        </div>
+                                                    </a>
+                                                    <a href="/chat/{{chat.uuid}}/delete-chat" class="dropdown-item d-flex align-items-center text-danger" onclick="return confirm('Are you sure? The chat and all messages will be deleted')">
+                                                        Delete chat
+                                                        <div class="icon ms-auto">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                                                <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                                            </svg>
+                                                        </div>
+                                                        
+                                                    </a>
+                                                    {% else %}
+                                                    <a href="/chat/{{chat.uuid}}/leave-chat" class="dropdown-item d-flex align-items-center text-danger">
+                                                        Leave
+                                                        <div class="icon ms-auto">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                                                        </div>
+                                                    </a>    
+                                                    {% endif %}   
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="avatar-group">
+                                            {% for member in chat.members.all %}
+                                            <div class="avatar avatar-sm">
+                                                {% if member.user_profile.profile_pic.url %}
+                                                    <img class="avatar-img" src="{{member.user_profile.profile_pic.url}}" alt="#">
+                                                {% else %}
+                                                    <img class="avatar-img" src="{% static "assets/img/avatars/0.jpg" %}" alt="#">
+                                                {% endif %}
+                                            </div>
+                                            {% endfor %}
+                                            {% if chat.is_caucus == False %}
+                                            <a href="#" class="avatar avatar-sm" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-add-members" aria-controls="offcanvas-add-members">
+                                                <span class="avatar-text" data-bs-toggle="tooltip" data-bs-placement="bottom" title="<strong>Add People</strong><p>Invite party to group</p>">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                                </span>
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Toolbar -->
+                        </div>
+                    </div>
+                    <!-- Content -->
+
+                </div>
+            </div>
+            <!-- Chat: Header -->
+
+            <!-- Chat: Content -->
+            <div id="scrollable_chat" class="chat-body hide-scrollbar flex-1 h-100" onload="window.scrollTo(0,document.body.scrollHeight);">
+                <div class="chat-body-inner" style="padding-bottom: 87px">
+                    <div class="py-6 py-lg-12">
+
+                        <!-- Message -->
+                        {% for message in chat_history %}
+                            <!-- Message -->
+                            <div class="message {% if message.sent_by == request.user %} message-out {% endif %}">
+                                <div class="avatar avatar-responsive">
+                                    {% if message.sent_by.user_profile.profile_pic.url %}
+                                        <img class="avatar-img" src="{{message.sent_by.user_profile.profile_pic.url}}" alt="{{message.sent_by.first_name}} {{message.sent_by.last_name}}">
+                                    {% elif message.is_llm %}
+                                        <img class="avatar-img" src="{% static "assets/img/avatars/gemini.jpg" %}" alt="{{user.first_name}} {{user.last_name}}">
+                                    {% else %}
+                                        <img class="avatar-img" src="{% static "assets/img/avatars/0.jpg" %}" alt="{{user.first_name}} {{user.last_name}}">
+                                    {% endif %}
+                                </div>
+
+                                <div class="message-inner">
+                                    <div class="message-body">
+                                        <div class="message-content">
+                                            <div class="message-text">
+                                                <p>{{message.message|markdownify|linebreaks}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="message-footer">
+                                        <span class="extra-small text-muted">{{message.created_at}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <br>
+                        <div id="chat-message"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Chat: Content -->
+
+            <!-- Chat: Footer -->
+            <div class="chat-footer pb-3 pb-lg-7 position-absolute bottom-0 start-0">
+                <!-- Chat: Form -->
+                <form ws-send id="chat-form" class="chat-form rounded-pill bg-dark" data-emoji-form="">
+                    <div class="row align-items-center gx-0">
+                        <div class="col-auto">
+                            <a href="#"
+                                class="icon px-6"
+                                hx-post="generate-user-answer"
+                                hx-trigger="click"
+                                hx-target="#generated_text"
+                                hx-swap="outerHTML"
+                            >
+                                <div class="d-none" id="generated_text"></div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-right" viewBox="0 0 16 16">
+                                    <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
+                                </svg>
+                            </a>
+                            
+                        </div>
+                        <div class="col">
+                            <div class="input-group">
+
+                                {{ chat_form.chat_message }}
+
+                                <a class="input-group-text text-body pe-0" data-emoji-btn="">
+                                    <span class="icon icon-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-smile"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-auto">
+                            <button type="submit" id="chat-message-submit" class="btn btn-icon btn-primary rounded-circle ms-5">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <!-- Chat: Form -->
+            </div>
+            <!-- Chat: Footer -->
+        </div>
+
+    </div>
+</main>
+<!-- Chat -->
+
+
+<!-- Chat: Add member -->
+<div class="offcanvas offcanvas-end offcanvas-aside" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvas-add-members">
+    <!-- Offcanvas Header -->
+    <div class="offcanvas-header py-4 py-lg-7 border-bottom ">
+        <a class="icon icon-lg text-muted" href="#" data-bs-dismiss="offcanvas">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </a>
+
+        <div class="visibility-xl-invisible overflow-hidden text-center">
+            <p class="text-truncate">Add or remove parties to the chat</p>
+        </div>
+
+    </div>
+    <!-- Offcanvas Header -->
+
+    <!-- Offcanvas Body -->
+    <div class="offcanvas-body hide-scrollbar py-0">
+        <form action="update-chat-members" method="post" id="update-chat-members-form">
+            {% csrf_token %}
+            <!-- Members -->
+            <ul class="list-group list-group-flush">
+                {% for contact in contacts %}
+                    {% if contact.user_profile.is_party == True %}
+                    <li class="list-group-item">
+                        <div class="row align-items-center gx-5">
+                            <div class="col-auto">
+                                <div class="avatar ">
+                                    {% if contact.user_profile.profile_pic.url %}
+                                        <img class="avatar-img" src="{{contact.user_profile.profile_pic.url}}" alt="{{contact.first_name}} {{contact.last_name}}">
+                                    {% else %}
+                                        <img class="avatar-img" src="{% static "assets/img/avatars/0.jpg" %}" alt="">
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h5>{{contact.first_name}} {{contact.last_name}}</h5>
+                                {% if chat.owner == contact %}
+                                    <p>owner</p>
+                                {% endif %}
+                            </div>
+                            <div class="col-auto">
+                                <div class="form-check">
+                                    <input 
+                                        form="update-chat-members-form"    
+                                        class="form-check-input" 
+                                        name="members"
+                                        type="checkbox" 
+                                        value="{{contact.id}}" 
+                                        id="id_chat_members_{{contact.id}}" 
+                                        {% if contact in chat.members.all %}
+                                        checked
+                                        {% endif %}
+                                        >
+                                    <label class="form-check-label" for="id_chat_members_{{contact.id}}"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <label class="stretched-label" for="id_chat_members_{{contact.id}}"></label>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+            </ul>
+            <!-- Members -->
+        </form>
+    </div>
+    <!-- Offcanvas Body -->
+
+    <!-- Offcanvas Footer -->
+    <div class="offcanvas-footer border-top py-4 py-lg-7">
+        <button class="btn btn-lg btn-primary w-100 d-flex align-items-center" type="submit" form="update-chat-members-form">
+            Update parties
+
+            <span class="icon ms-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </span>
+        </button>
+    </div>
+    <!-- Offcanvas Footer -->
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var objDiv = document.getElementById("scrollable_chat");
+        objDiv.scrollTop = objDiv.scrollHeight;
+    });
+
+    document.body.addEventListener('htmx:wsAfterMessage', function (evt) {
+        var objDiv = document.getElementById("scrollable_chat");
+        if (objDiv) {
+            objDiv.scrollTop = objDiv.scrollHeight;
+        }
+        var chatForm = document.getElementById("id_chat_message");
+        if (chatForm) {
+            chatForm.value = "";
+        }
+    });
+    
+    function disableButton(tag) {
+        document.getElementById("run_button_" + tag).disabled = true; 
+        let newEle = '<div class="spinner-grow spinner-grow-sm me-3" role="status"><span class="sr-only">Loading...</span></div>';
+        document.getElementById("run_spinner_" + tag).outerHTML = newEle;
+    }
+
+    document.addEventListener('htmx:afterRequest', function(evt) {
+        if (evt.detail.target.id == 'generated_text') {
+            let textbox = document.getElementById("id_chat_message");
+            textbox.value = document.getElementById("generated_text").innerText;
+        }
+    });
+
+</script>
+
+{% endblock %}

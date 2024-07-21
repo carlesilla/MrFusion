@@ -1,0 +1,23 @@
+{% load static %}
+<div id="chat-message" hx-swap-oob="beforeend">
+    <!-- Message -->
+    <div class="message">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#modal-profile" class="avatar avatar-responsive">
+            <img class="avatar-img" src="{% static "assets/img/avatars/gemini.jpg" %}" alt="MrFusion">
+        </a>
+
+        <div class="message-inner">
+            <div class="message-body">
+                <div class="message-content">
+                    <div class="message-text">
+                        <p>{{message}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="message-footer">
+                <span class="extra-small text-muted">{{message.created_at}}</span>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <!-- Head -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1, shrink-to-fit=no, viewport-fit=cover">
+        <meta name="color-scheme" content="light dark">
+
+        <title>Mr Fusion</title>
+
+        <!-- Favicon -->
+        <link rel="shortcut icon" href="{% static "assets/img/favicon/favicon.ico" %}" type="image/x-icon">
+
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static "assets/img/favicon/apple-touch-icon.png" %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static "assets/img/favicon/favicon-32x32.png" %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static "assets/img/favicon/favicon-16x16.png" %}">
+        <link rel="mask-icon" href="{% static "assets/img/favicon/safari-pinned-tab.svg" %}" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+
+        <!-- Font -->
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700" rel="stylesheet">
+
+        <!-- Template CSS -->
+        <link class="css-lt" rel="stylesheet" href="{% static "assets/css/template.bundle.css" %}" media="(prefers-color-scheme: light)">
+
+        <!-- HTMx -->
+        <script src="{% static "assets/js/htmx.min.js" %}" defer></script>
+        <script src="{% static "assets/js/ws.js" %}" defer></script>
+
+    </head>
+
+    <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        <!-- Layout -->
+        <div class="layout overflow-hidden">
+            {% include "navbar.html" %}
+            {% include "sidebar.html" %}
+            {% block content %}
+            {% endblock %}
+        </div>
+        <!-- Layout -->
+
+        {% include "modal-invite.html" %}
+        {% include "modal-profile.html" %}
+        {% include "modal-conflict-info.html" %}
+        {% include "modal-edit-chat.html" %}
+
+        <!-- Scripts -->
+        <script src="{% static "assets/js/vendor.js" %}"></script>
+        <script src="{% static "assets/js/template.js" %}"></script>
+    </body>
+</html>

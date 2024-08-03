@@ -157,6 +157,15 @@
                                     </div>
 
                                     <div class="message-footer">
+                                        {% if message.is_llm %}
+                                        <span class="extra-small text-muted">Mr Fusion</span><br>
+                                        {% else %}
+                                            {% if message.sent_by.first_name %}
+                                            <span class="extra-small text-muted">{{message.sent_by.first_name}} {{message.sent_by.last_name}}</span><br>
+                                            {% else %}
+                                            <span class="extra-small text-muted">{{message.sent_by.username}}</span><br>
+                                            {% endif %}
+                                        {% endif %}
                                         <span class="extra-small text-muted">{{message.created_at}}</span>
                                     </div>
                                 </div>

@@ -179,14 +179,13 @@ def generate_multiparty_intro(conflict_info_summary, parties, chat_description, 
 
 
 def generate_multiparty_answer(conflict_info_summary, parties, chat_description, chat_history):
-    query = f"""You are an expert mediator in charge of mediating a conflict between {parties}. \
-    Your task is to review the history of messages and mediate between the parties so that they reach an agreement. \
-    You can use any type of mediation technique that you know, such as paraphrasing what someone said but using other words, \
-    proposing agreements, asking questions to delve deeper into conflictive aspects, or any other technique that may be useful \
-    to resolve the conflict. Remain neutral, do not take the side of any party.\
-    Guide the parties through the process, presenting different scenarios and potential outcomes, \
-    and help all to see the implications of each decision. \
-    Answer the question briefly, concisely and clearly, using a maximum of 50 words in one paragraph. \
+
+    query = f"""You are Mr Fusion, an expert mediator in charge of mediating a conflict between {parties}. \
+    Your task is to review the history of messages and generate a message to follow the conversation \
+    with the intention to help the parties to reach an agreement. \
+    Remain neutral, do not take the side of any party.\
+    Respond briefly, concisely and clearly, using a maximum of 50 words in one paragraph. \
+    Very important: return only the response of Mr Fusion, not the responses of the other participants of the conflict.
     Below you have a summary of the conflict to be discussed: {conflict_info_summary} \n
     The goal for this particular chat is the following: {chat_description}. \
     """
@@ -204,7 +203,9 @@ def generate_multiparty_answer(conflict_info_summary, parties, chat_description,
     chain = prompt | model
 
     response = chain.invoke({"messages": messages})
-    return response.content
+    content = response.content
+
+    return content
 
 
 def check_if_agreement(conflict_info_summary, parties, chat_history):

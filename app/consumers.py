@@ -81,7 +81,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = event["chat_message"]
         sender_user_id = event["sender_user_id"]
 
-        if self.scope["user"].id == sender_user_id:
+        if self.scope["user"].id == sender_user_id or True:
             saved_message = await self.save_chat_message(message, is_llm=True)
-            html = render_to_string("mediator_message.html", {"message":saved_message})
+            html = render_to_string("mediator-message.html", {"message":saved_message})
             await self.channel_layer.group_send(self.room_group_name, {"type":"chat.message", "message":html, "sender_channel_name":self.channel_name + "-1234"})

@@ -141,7 +141,7 @@
                                     {% if message.sent_by.user_profile.profile_pic.url %}
                                         <img class="avatar-img" src="{{message.sent_by.user_profile.profile_pic.url}}" alt="{{message.sent_by.first_name}} {{message.sent_by.last_name}}">
                                     {% elif message.is_llm %}
-                                        <img class="avatar-img" src="{% static "assets/img/avatars/gemini.jpg" %}" alt="{{user.first_name}} {{user.last_name}}">
+                                        <img class="avatar-img" src="{% static "assets/img/avatars/mr_fusion.jpg" %}" alt="{{user.first_name}} {{user.last_name}}">
                                     {% else %}
                                         <img class="avatar-img" src="{% static "assets/img/avatars/0.jpg" %}" alt="{{user.first_name}} {{user.last_name}}">
                                     {% endif %}

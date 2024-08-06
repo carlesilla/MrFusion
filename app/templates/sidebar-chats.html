@@ -60,7 +60,7 @@
                                         {% if chat.chathistory_set.last.sent_by.user_profile.profile_pic.url %}
                                         <img class="avatar-img" src="{{chat.chathistory_set.last.sent_by.user_profile.profile_pic.url}}" alt="{{chat.chathistory_set.last.sent_by.first_name}} {{chat.chathistory_set.last.sent_by.last_name}}">
                                         {% elif chat.chathistory_set.last.is_llm %}
-                                        <img class="avatar-img" src="{% static "assets/img/avatars/gemini.jpg" %}" alt="{{user.first_name}} {{user.last_name}}">
+                                        <img class="avatar-img" src="{% static "assets/img/avatars/mr_fusion.jpg" %}" alt="{{user.first_name}} {{user.last_name}}">
                                         {% else %}
                                         <img class="avatar-img" src="{% static "assets/img/avatars/0.jpg" %}" alt="{{chat.chathistory_set.last.sent_by.first_name}} {{chat.chathistory_set.last.sent_by.last_name}}">
                                         {% endif %}    

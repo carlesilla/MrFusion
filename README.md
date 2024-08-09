@@ -159,4 +159,15 @@ The next step as administrator is invite all parties to register. If you have co
 
 By following these steps, you'll be well on your way to resolving conflicts efficiently and collaboratively. 
 
+## Demo
+
+Check out Mr Fusion in action in the video below guiding Jennifer and Marty through a challenging disagreement about their future living arrangements. Watch how Mr Fusion expertly navigates this tricky situation and helps Jennifer and Marty find common ground.
+
+[![Mr Fusion - An AI-powered web app to facilitate the resolution of any kind of conflict](https://img.youtube.com/vi/umKdTxb37r4/0.jpg)](https://www.youtube.com/watch?v=umKdTxb37r4)
+
+Gemini API Developer Competition
+
+#buildwithgemini 
+
+
 Happy mediating!
